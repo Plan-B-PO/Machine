@@ -1,20 +1,16 @@
 package com.baltic.machine.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-
 public class Machine {
     private String id;
-    private String appUser;
-    private String artifactUrl;
-    private String applicationId;
-    private String version;
+    private Long appUser;
+    private Runnable runnable;
+    private String logger;
 
-    public Machine(String id, String appUser, String artifactUrl, String applicationId, String version) {
+    public Machine(String id, Long appUser, Runnable runnable, String logger) {
         this.id = id;
         this.appUser = appUser;
-        this.artifactUrl = artifactUrl;
-        this.applicationId = applicationId;
-        this.version = version;
+        this.runnable = runnable;
+        this.logger = logger;
     }
 
     public String getId() {
@@ -25,46 +21,27 @@ public class Machine {
         this.id = id;
     }
 
-    public String getAppUser() {
+    public Long getAppUser() {
         return appUser;
     }
 
-    public void setAppUser(String appUser) {
+    public void setAppUser(Long appUser) {
         this.appUser = appUser;
     }
 
-    public String getArtifactUrl() {
-        return artifactUrl;
+    public Runnable getRunnable() {
+        return runnable;
     }
 
-    public void setArtifactUrl(String artifactUrl) {
-        this.artifactUrl = artifactUrl;
+    public void setRunnable(Runnable runnable) {
+        this.runnable = runnable;
     }
 
-    public String getApplicationId() {
-        return applicationId;
+    public String getLogger() {
+        return logger;
     }
 
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    @Override
-    public String toString() {
-        return "Machine{" +
-                "id='" + id + '\'' +
-                ", appUser='" + appUser + '\'' +
-                ", artifactUrl='" + artifactUrl + '\'' +
-                ", applicationId='" + applicationId + '\'' +
-                ", version='" + version + '\'' +
-                '}';
+    public void setLogger(String logger) {
+        this.logger = logger;
     }
 }
