@@ -1,21 +1,20 @@
 package com.baltic.machine.controller;
 
 import com.baltic.machine.model.Machine;
-import com.baltic.machine.model.MachineStatus;
 import com.baltic.machine.repository.MachineRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
-import com.github.dockerjava.api.model.BuildResponseItem;
+import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
+import org.bouncycastle.tsp.TSPUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.util.Optional;
 
 @RestController
 public class MachineController {
@@ -24,30 +23,24 @@ public class MachineController {
 
     public MachineController(MachineRepository repository) {
         this.repository = repository;
-        this.dockerClient = DockerClientBuilder.getInstance("tcp://192.168.43.138:2375").build();
+        this.dockerClient = DockerClientBuilder.getInstance("tcp://192.168.137.182:2375").build();
     }
 
-    @GetMapping("/machine/status")
-    public ResponseEntity<MachineStatus> machineStatus(@PathVariable Long id) {
-        // TODO
 
-        return new ResponseEntity<>(MachineStatus.healthy, HttpStatus.OK);
-    }
-
-    @GetMapping("/machine/computation")
+    @GetMapping("/machine/computation/{id}")
     public ResponseEntity<Machine> getMachine(@PathVariable String id) {
-        // TODO
-       Machine machine = repository.findByApplicationId(id);
-        // run docker container
-        return ResponseEntity.ok(machine);
+       Machine machine = repository.findByRunnableApplicationId(id);
+       if (machine != null) {
+           return ResponseEntity.ok(machine);
+       }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/machine/computation")
     public ResponseEntity activateMachine(@RequestBody Machine newMachine) {
-        repository.save(newMachine);
+        String path = newMachine.getRunnable().getComputationSteps().getArtifactUrl();
         // TODO use Dockerfile
         File baseDir = new File("C:\\Users\\dary\\Downloads\\machine\\machine\\src\\main\\resources\\docker_dir\\Dockerfile");
-
 
         String imageId = dockerClient.buildImageCmd()
                 .withDockerfile(baseDir)
@@ -55,28 +48,28 @@ public class MachineController {
                 .awaitImageId();
 
         CreateContainerResponse container
-                = dockerClient.createContainerCmd(imageId).exec();
-
+                = dockerClient.createContainerCmd(imageId).withCmd("touch", "/test_test").exec();
         dockerClient.startContainerCmd(container.getId()).exec();
 
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        repository.save(newMachine);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping
-    public ResponseEntity abortMachine(@RequestBody String name) {
-        // TODO
-        // run docker container
-
-
-        dockerClient.killContainerCmd(name).exec();
+    @DeleteMapping("/machine/computation/{id}")
+    public ResponseEntity abortMachine(@PathVariable String id) {
+        try {
+            dockerClient.killContainerCmd(id).exec();
+        } catch (ConflictException e) {
+            System.out.println("Cannot kill");
+        }
         InspectContainerResponse container
-                = dockerClient.inspectContainerCmd(name).exec();
-        if(container == null)
+                = dockerClient.inspectContainerCmd(id).exec();
+        if (container == null)
             return new ResponseEntity<>(HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
 
 
 }

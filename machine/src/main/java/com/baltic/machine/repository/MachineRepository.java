@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface MachineRepository extends MongoRepository<Machine, String> {
 
-    public Machine findByApplicationId(String id);
+    Machine findByRunnableApplicationId(String id);
 
 }
