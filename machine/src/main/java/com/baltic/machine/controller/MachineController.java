@@ -65,9 +65,12 @@ public class MachineController {
         }
         InspectContainerResponse container
                 = dockerClient.inspectContainerCmd(id).exec();
+
+        // TODO
         if (container == null)
             return new ResponseEntity<>(HttpStatus.OK);
         else
+            // TODO even after killed - 404 NOT FOUND
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
