@@ -1,22 +1,22 @@
 package com.baltic.machine.model;
 
 public class Runnable {
-    private String ApplicationId;
+    private String applicationId;
     private ComputationSteps computationSteps;
     private String version;
 
     public Runnable(String applicationId, ComputationSteps computationSteps, String version) {
-        ApplicationId = applicationId;
+        this.applicationId = applicationId;
         this.computationSteps = computationSteps;
         this.version = version;
     }
 
     public String getApplicationId() {
-        return ApplicationId;
+        return applicationId;
     }
 
     public void setApplicationId(String applicationId) {
-        ApplicationId = applicationId;
+        this.applicationId = applicationId;
     }
 
     public ComputationSteps getComputationSteps() {
