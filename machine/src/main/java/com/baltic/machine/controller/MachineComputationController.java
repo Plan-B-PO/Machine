@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 
 @RestController
-public class MachineController {
+public class MachineComputationController {
     private final MachineRepository repository;
     private final DockerClient dockerClient;
 
-    public MachineController(MachineRepository repository) {
+    public MachineComputationController(MachineRepository repository) {
         this.repository = repository;
         this.dockerClient = DockerClientBuilder.getInstance("tcp://192.168.137.182:2375").build();
     }
@@ -40,19 +40,19 @@ public class MachineController {
     public ResponseEntity activateMachine(@RequestBody Machine newMachine) {
         String path = newMachine.getRunnable().getComputationSteps().getArtifactUrl();
         // TODO use Dockerfile
-        File baseDir = new File("C:\\Users\\dary\\Downloads\\machine\\machine\\src\\main\\resources\\docker_dir\\Dockerfile");
 
         String imageId = dockerClient.buildImageCmd()
-                .withDockerfile(baseDir)
+                .withDockerfile(new File(path))
                 .exec(new BuildImageResultCallback())
                 .awaitImageId();
 
         CreateContainerResponse container
-                = dockerClient.createContainerCmd(imageId).withCmd("touch", "/test_test").exec();
+                = dockerClient.createContainerCmd(imageId).withTty(true).withAttachStdin(true).exec();
         dockerClient.startContainerCmd(container.getId()).exec();
 
-
+        newMachine.getRunnable().setApplicationId(container.getId());
         repository.save(newMachine);
+        System.out.println("container is running" + newMachine.toString());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
