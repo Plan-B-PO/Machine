@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Params {
-    String name;
-    String type;
-    String defaultValue;
+public class Resource {
+    Double cpus;
+    Double gpus;
+    Double memory;
+    Double localStorage;
 }

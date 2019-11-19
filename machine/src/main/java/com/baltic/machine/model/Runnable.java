@@ -1,37 +1,15 @@
 package com.baltic.machine.model;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Runnable {
-    private String applicationId;
-    private ComputationSteps computationSteps;
-    private String version;
-
-    public Runnable(String applicationId, ComputationSteps computationSteps, String version) {
-        this.applicationId = applicationId;
-        this.computationSteps = computationSteps;
-        this.version = version;
-    }
-
-    public String getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
-
-    public ComputationSteps getComputationSteps() {
-        return computationSteps;
-    }
-
-    public void setComputationSteps(ComputationSteps computationSteps) {
-        this.computationSteps = computationSteps;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
+    String applicationId;
+    ComputationSteps computationSteps;
+    String version;
 }

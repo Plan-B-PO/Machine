@@ -10,8 +10,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Params {
-    String name;
-    String type;
-    String defaultValue;
+public class ComputationTask {
+    Machine machine;
+    String token;
+    ComputationStatus status;
 }
