@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MachineRepository extends MongoRepository<Machine, Optional> {
+public interface MachineRepository extends MongoRepository<Machine, String> {
 
     Machine findByRunnableApplicationId(String id);
 

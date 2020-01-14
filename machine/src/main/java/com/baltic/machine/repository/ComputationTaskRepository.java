@@ -5,4 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ComputationTaskRepository extends MongoRepository<ComputationTask, String> {}
+public interface ComputationTaskRepository extends MongoRepository<ComputationTask, String> {
+    ComputationTask findByMachineId(String id);
+    ComputationTask findByMachineRunnableApplicationId(String name);
+}

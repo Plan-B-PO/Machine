@@ -14,6 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.lang.reflect.Array;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,7 +50,7 @@ class MachineComputationControllerTest {
                 .appUserId("123")
                 .id("312-nowa-apka")
                 .logger(null)
-                .runnable(new Runnable("app-id", new ComputationSteps(null, "docker.hub.pl/calc", null), "version_3.2.4")).build();
+                .runnable(new Runnable("app-id", new ComputationSteps(null, List.of("docker.hub.pl/calc") , null), "version_3.2.4")).build();
         ComputationTask computationTask = new ComputationTask(machine, "nowy-token-12312-12312", ComputationStatus.RUNNING);
         mvc.perform(MockMvcRequestBuilders
                 .post(uri)
