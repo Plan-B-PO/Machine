@@ -5,6 +5,7 @@ public enum ComputationStatus {
         STEP_FINISHED,
         RUNNING,
         DONE,
+        FINISHED,
         ERROR
 }
 

@@ -32,7 +32,7 @@ public class MachineComputationController {
     }
 
     @PostMapping("/computation")
-    public ResponseEntity activateComputationTask(@Valid @RequestBody ComputationTask computationTask) {
+    public ResponseEntity activateComputationTask(@Valid @RequestBody ComputationTask computationTask) throws InterruptedException {
         ActivationStatus status = service.activateComputationTask(computationTask);
         // TODO add all possibilities
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -58,7 +58,7 @@ public class MachineComputationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/saveToLogger/{id}/{log}/")
+    @GetMapping("/saveToLogger/{id}/{log}")
     public ResponseEntity saveToLogger(@PathVariable String id, @PathVariable String log) {
         System.out.println("Container " + id + "\t log: " + log);
 
