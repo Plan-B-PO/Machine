@@ -17,11 +17,9 @@ public class ComputationTask {
     String id;
     String name;
     String userId;
-    Aplication aplication;
+    Application application;
     Input input;
     ComputationStepPackage computationStepPackage;
-    String token;
-    String computationId;
 
     @Override
     public String toString() {
@@ -29,11 +27,9 @@ public class ComputationTask {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", userId=" + userId +
-                ", application='" + aplication + '\'' +
+                ", application='" + application + '\'' +
                 ", input='" + input + '\'' +
                 ", computationStepPackage='" + computationStepPackage + '\'' +
-                ", token='" + token + '\'' +
-                ", computationId='" + computationId + '\'' +
                 '}';
     }
 

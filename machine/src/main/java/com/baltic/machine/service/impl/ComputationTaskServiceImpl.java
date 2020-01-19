@@ -36,7 +36,7 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
     }
 
     public Task getTask(String id) {
-        return computationTaskRepository.findByMachineRunnableApplicationId(id);
+        return computationTaskRepository.findByComputationTaskApplicationId(id);
     }
 
     public ActivationStatus activateComputationTask(Task task) throws InterruptedException {
@@ -108,7 +108,7 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
         System.out.println("Requested to kill container id: " + id);
 
         try {
-            Task task = computationTaskRepository.findByMachineRunnableApplicationId(id);
+            Task task = computationTaskRepository.findByComputationTaskApplicationId(id);
             id = task.getComputationTask().getComputationStepPackage().getApplicationId();
             System.out.println("Requested to kill container id: " + id);
             task.setStatus(ComputationStatus.DONE);
@@ -134,7 +134,7 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
         //ComputationTask computationTask = null;
         Task task = null;
         try {
-            task = computationTaskRepository.findByMachineRunnableApplicationId(id);
+            task = computationTaskRepository.findByComputationTaskApplicationId(id);
             task.setStatus(ComputationStatus.valueOf (status));
             computationTaskRepository.save(task);
         } catch (Exception e) {

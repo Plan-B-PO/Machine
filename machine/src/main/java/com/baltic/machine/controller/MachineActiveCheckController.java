@@ -43,7 +43,7 @@ public class MachineActiveCheckController {
     {
         List<Container> containers = dockerClient.listContainersCmd().exec();
 
-        containers.forEach(m -> System.out.println(ComputationTaskRepository.findByMachineRunnableApplicationId(m.getId())));
+        containers.forEach(m -> System.out.println(ComputationTaskRepository.findByComputationTaskApplicationId(m.getId())));
 
         RestTemplate restTemplate = new RestTemplate();
         ComputationTaskRepository.findAll().forEach(m -> restTemplate.postForObject(activeCheckStatusUrl, m, String.class));

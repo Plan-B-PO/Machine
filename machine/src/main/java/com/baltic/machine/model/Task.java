@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import static com.baltic.machine.model.ComputationStatus.CREATED;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,5 +16,5 @@ public class Task {
     ComputationTask computationTask;
     String token;
     String computationId;
-    ComputationStatus status;
+    ComputationStatus status = CREATED;
 }
