@@ -52,15 +52,12 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
             List<ComputationSteps> listOfComputationSteps = task.getComputationTask().getComputationStepPackage().getComputationSteps();
             List<String> listOfArtifactUrl = null;
 
-            System.out.println(listOfComputationSteps);
-
             listOfComputationSteps.forEach( step -> System.out.println(step.getArtifactUrl()));
 
 
             containerFromDockerHub = listOfComputationSteps.stream()
                     .map(ComputationSteps::getArtifactUrl).filter(s -> s != null)
                     .collect(toList());
-
 
         } catch (Exception e) {
             System.out.println(e);
@@ -74,25 +71,23 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
         HostConfig hostConfig = HostConfig.newHostConfig()
                 .withBinds(Bind.parse("/root/pop_image/computations/:/opt/computations"));
 
-
-
         String appUser =  task.getComputationTask().getUserId();
+
         for(int i = 0; i < finalContainerFromDockerHub.size(); i++) {
-            //String containerName = finalContainerFromDockerHub.get(i);
-            String containerName = task.getComputationTask().getComputationStepPackage().getApplicationId();
+            String containerName = finalContainerFromDockerHub.get(i);
+            //String containerName = task.getComputationTask().getComputationStepPackage().getApplicationId();
+
             CreateContainerResponse container
                 = dockerClient.createContainerCmd(containerName)
-                .withName(appUser + "_"+ uuid + "_" + i)
+                .withName(task.getComputationId() + "_" + i)
                 .withTty(true)
                 .withAttachStdin(true).withHostConfig(hostConfig)
                 .exec();
 
         dockerClient.startContainerCmd(container.getId()).exec();
-
         task.setStatus(ComputationStatus.CREATED);
         task.getComputationTask().getComputationStepPackage().setApplicationId(container.getId());
         computationTaskRepository.save(task);
-
             int status = 0;
             try {
                 status = dockerClient.waitContainerCmd(container.getId())
