@@ -17,4 +17,16 @@ public class Task {
     String token;
     String computationId;
     ComputationStatus status = CREATED;
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "ComputationTask='" + computationTask + '\'' +
+                "ComputationId='" + computationId + '\'' +
+                ", token='" + token + '\'' +
+                ", ComputationStatus=" + status +
+                '}';
+    }
 }
+
+

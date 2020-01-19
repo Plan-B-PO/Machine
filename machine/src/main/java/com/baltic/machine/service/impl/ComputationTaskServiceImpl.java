@@ -78,7 +78,8 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
 
         String appUser =  task.getComputationTask().getUserId();
         for(int i = 0; i < finalContainerFromDockerHub.size(); i++) {
-            String containerName = finalContainerFromDockerHub.get(i);
+            //String containerName = finalContainerFromDockerHub.get(i);
+            String containerName = task.getComputationTask().getComputationStepPackage().getApplicationId();
             CreateContainerResponse container
                 = dockerClient.createContainerCmd(containerName)
                 .withName(appUser + "_"+ uuid + "_" + i)
