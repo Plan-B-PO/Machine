@@ -3,16 +3,15 @@ package com.baltic.machine.model;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ComputationSteps {
-    private String artifactUrl;
-    private String command;
-    private List<Params> params;
-
+public class Aplication {
+    String id;
+    String name;
+    String description;
+    String icon;
+    Schema schema;
 }

@@ -1,32 +1,25 @@
 package com.baltic.machine.service.impl;
 
+import com.baltic.machine.model.ComputationSteps;
+import com.baltic.machine.model.Task;
 import com.baltic.machine.model.ComputationStatus;
 import com.baltic.machine.model.ComputationTask;
 import com.baltic.machine.repository.ComputationTaskRepository;
 import com.baltic.machine.service.ComputationTaskService;
 import com.baltic.machine.service.enums.ActivationStatus;
 import com.baltic.machine.service.enums.AbortStatus;
-import com.baltic.machine.service.enums.StepStatus;
 import com.github.dockerjava.api.DockerClient;
+import com.baltic.machine.service.enums.StepStatus;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.HostConfig;
-import com.github.dockerjava.api.model.Volume;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
-import com.github.dockerjava.core.exec.WaitContainerCmdExec;
-import com.sun.tools.javac.main.CommandLine;
-import org.apache.tomcat.jni.OS;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -42,17 +35,24 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
         this.computationTaskRepository = repository;
     }
 
-    public ComputationTask getComputationTask(String id) {
+    public Task getTask(String id) {
         return computationTaskRepository.findByMachineRunnableApplicationId(id);
     }
 
-    public ActivationStatus activateComputationTask(ComputationTask computationTask) throws InterruptedException {
-        System.out.println(computationTask);
+    public ActivationStatus activateComputationTask(Task task) throws InterruptedException {
+        System.out.println(task);
         List<String> containerFromDockerHub = null;
         UUID uuid = UUID.randomUUID();
 
         try {
-             containerFromDockerHub = computationTask.getMachine().getRunnable().getComputationSteps().getArtifactUrl();
+//             containerFromDockerHub = computationTask.getMachine().getRunnable().getComputationSteps().getArtifactUrl();
+            List<ComputationSteps> listOfComputationSteps = task.getComputationTask().getComputationStepPackage().getComputationSteps();
+            List<String> listOfArtifactUrl = null;
+            for(int i=0; i<listOfComputationSteps.size(); i++){
+                listOfArtifactUrl.add(listOfComputationSteps.get(i).getArtifactUrl());
+            }
+            containerFromDockerHub = listOfArtifactUrl;
+
         } catch (Exception e) {
             System.out.println(e);
             containerFromDockerHub.add("busybox:latest");
@@ -67,7 +67,7 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
 
 
 
-        String appUser =  computationTask.getMachine().getAppUserId();
+        String appUser =  task.getComputationTask().getUserId();
         for(int i = 0; i < finalContainerFromDockerHub.size(); i++) {
             String containerName = finalContainerFromDockerHub.get(i);
             CreateContainerResponse container
@@ -79,9 +79,9 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
 
         dockerClient.startContainerCmd(container.getId()).exec();
 
-        computationTask.setStatus(ComputationStatus.CREATED);
-        computationTask.getMachine().getRunnable().setApplicationId(container.getId());
-        computationTaskRepository.save(computationTask);
+        task.setStatus(ComputationStatus.CREATED);
+        task.getComputationTask().getComputationStepPackage().setApplicationId(container.getId());
+        computationTaskRepository.save(task);
 
             int status = 0;
             try {
@@ -93,7 +93,7 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
 
             System.out.println("status " + i + " " + status);
 
-        System.out.println("container is running: " + computationTask.toString());
+        System.out.println("container is running: " + task.getComputationTask().toString());
 
         }
 
@@ -108,11 +108,11 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
         System.out.println("Requested to kill container id: " + id);
 
         try {
-            ComputationTask computationTask = computationTaskRepository.findByMachineRunnableApplicationId(id);
-            id = computationTask.getMachine().getRunnable().getApplicationId();
+            Task task = computationTaskRepository.findByMachineRunnableApplicationId(id);
+            id = task.getComputationTask().getComputationStepPackage().getApplicationId();
             System.out.println("Requested to kill container id: " + id);
-            computationTask.setStatus(ComputationStatus.DONE);
-            computationTaskRepository.save(computationTask);
+            task.setStatus(ComputationStatus.DONE);
+            computationTaskRepository.save(task);
             dockerClient.killContainerCmd(id).exec();
 //            dockerClient.removeContainerCmd(id).exec();
         } catch (Exception e) {
@@ -131,11 +131,12 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
     }
 
     public StepStatus changeTaskStatus(String id, String status) {
-        ComputationTask computationTask = null;
+        //ComputationTask computationTask = null;
+        Task task = null;
         try {
-            computationTask = computationTaskRepository.findByMachineRunnableApplicationId(id);
-            computationTask.setStatus(ComputationStatus.valueOf (status));
-            computationTaskRepository.save(computationTask);
+            task = computationTaskRepository.findByMachineRunnableApplicationId(id);
+            task.setStatus(ComputationStatus.valueOf (status));
+            computationTaskRepository.save(task);
         } catch (Exception e) {
             System.out.println("changeTaskStatus" + e);
 

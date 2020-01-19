@@ -43,22 +43,22 @@ class MachineComputationControllerTest {
         mvc.perform(get(uri)).andExpect(status().is2xxSuccessful());
     }
 
-    @Test
-    void activateComputationTask() throws Exception {
-        String uri = "machine/computation";
-        Machine machine = Machine.builder()
-                .appUserId("123")
-                .id("312-nowa-apka")
-                .logger(null)
-                .runnable(new Runnable("app-id", new ComputationSteps(null, List.of("docker.hub.pl/calc") , null), "version_3.2.4")).build();
-        ComputationTask computationTask = new ComputationTask(machine, "nowy-token-12312-12312", ComputationStatus.RUNNING);
-        mvc.perform(MockMvcRequestBuilders
-                .post(uri)
-                .content(asJsonString(computationTask))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-    }
+//    @Test
+//    void activateComputationTask() throws Exception {
+//        String uri = "machine/computation";
+//        Machine machine = Machine.builder()
+//                .appUserId("123")
+//                .id("312-nowa-apka")
+//                .logger(null)
+//                .runnable(new Runnable("app-id", new ComputationSteps(null, List.of("docker.hub.pl/calc") , null), "version_3.2.4")).build();
+//        ComputationTask computationTask = new ComputationTask(machine, "nowy-token-12312-12312", ComputationStatus.RUNNING);
+//        mvc.perform(MockMvcRequestBuilders
+//                .post(uri)
+//                .content(asJsonString(computationTask))
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isCreated());
+//    }
 
     @Test
     void abortComputationTaskNotFound() throws Exception{

@@ -1,5 +1,6 @@
 package com.baltic.machine.controller;
 
+import com.baltic.machine.model.Task;
 import com.baltic.machine.model.ComputationTask;
 import com.baltic.machine.service.enums.AbortStatus;
 import com.baltic.machine.service.enums.ActivationStatus;
@@ -21,19 +22,19 @@ public class MachineComputationController {
     }
 
     @GetMapping("/computation/{id}")
-    public ResponseEntity<ComputationTask> getComputationTask(@PathVariable String id) {
-       ComputationTask computationTask = service.getComputationTask(id);
+    public ResponseEntity<Task> getComputationTask(@PathVariable String id) {
+       Task task = service.getTask(id);
         System.out.println("get computation id: " + id);
-        System.out.println("get computation task: " + computationTask);
-       if (computationTask != null) {
-           return ResponseEntity.ok(computationTask);
+        System.out.println("get computation task: " + task);
+       if (task != null) {
+           return ResponseEntity.ok(task);
        }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/computation")
-    public ResponseEntity activateComputationTask(@Valid @RequestBody ComputationTask computationTask) throws InterruptedException {
-        ActivationStatus status = service.activateComputationTask(computationTask);
+    public ResponseEntity activateComputationTask(@Valid @RequestBody Task task) throws InterruptedException {
+        ActivationStatus status = service.activateComputationTask(task);
         // TODO add all possibilities
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

@@ -11,7 +11,30 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ComputationTask {
-    Machine machine;
+//    Machine machine;
+//    String token;
+//    ComputationStatus status;
+    String id;
+    String name;
+    String userId;
+    Aplication aplication;
+    Input input;
+    ComputationStepPackage computationStepPackage;
     String token;
-    ComputationStatus status;
+    String computationId;
+
+    @Override
+    public String toString() {
+        return "ComputationTask{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", userId=" + userId +
+                ", application='" + aplication + '\'' +
+                ", input='" + input + '\'' +
+                ", computationStepPackage='" + computationStepPackage + '\'' +
+                ", token='" + token + '\'' +
+                ", computationId='" + computationId + '\'' +
+                '}';
+    }
+
 }
