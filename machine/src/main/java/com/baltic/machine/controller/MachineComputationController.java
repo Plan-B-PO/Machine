@@ -33,7 +33,7 @@ public class MachineComputationController {
     }
 
     @PostMapping("/computation")
-    public ResponseEntity activateComputationTask(@Valid @RequestBody Task task) throws InterruptedException {
+    public ResponseEntity activateComputationTask(@RequestBody Task task) throws InterruptedException {
         ActivationStatus status = service.activateComputationTask(task);
         // TODO add all possibilities
         return new ResponseEntity<>(HttpStatus.CREATED);

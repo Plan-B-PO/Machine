@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 
 @Service
@@ -48,10 +51,16 @@ public class ComputationTaskServiceImpl implements ComputationTaskService {
 //             containerFromDockerHub = computationTask.getMachine().getRunnable().getComputationSteps().getArtifactUrl();
             List<ComputationSteps> listOfComputationSteps = task.getComputationTask().getComputationStepPackage().getComputationSteps();
             List<String> listOfArtifactUrl = null;
-            for(int i=0; i<listOfComputationSteps.size(); i++){
-                listOfArtifactUrl.add(listOfComputationSteps.get(i).getArtifactUrl());
-            }
-            containerFromDockerHub = listOfArtifactUrl;
+
+            System.out.println(listOfComputationSteps);
+
+            listOfComputationSteps.forEach( step -> System.out.println(step.getArtifactUrl()));
+
+
+            containerFromDockerHub = listOfComputationSteps.stream()
+                    .map(ComputationSteps::getArtifactUrl).filter(s -> s != null)
+                    .collect(toList());
+
 
         } catch (Exception e) {
             System.out.println(e);
